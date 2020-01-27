@@ -1,11 +1,34 @@
 <script type="text/javascript">
   function tampil_paket(input){
-    var num = input.value;
+    var num     = input.value
 
     $.post("modules/transaksi/paket.php", {
       dataidpaket: num,
-    }, function(response) {      
-      $('#biaya').html(response)
+    }, function(response) {
+      var data = $.parseJSON(response);
+      $('#biaya').html(data[0]);
+      var biaya_a = Number(data[1]), // biaya awal/asli
+          biaya_t = Number(data[2]); // biaya tambahan
+
+      // fungsi untuk mengupdate tampilan harga
+      function update_biaya(b_a, b_t) {
+        // hitung biaya tambahan
+        var orang    = Number($('#tambahan_orang').val());
+        var tambahan = b_t * orang;
+        // update biaya tambahan
+        $('#harga_tambahan').val(tambahan.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.'));
+
+        var total = b_a + tambahan;
+        $('#total').val(total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.'));
+      }
+      // tetap jalan saat berganti paket
+      update_biaya(biaya_a, biaya_t);
+
+      // tambah event handler untuk tambahan orang
+      $('#tambahan_orang').on('change', function(){
+        // dijalankan saat berubah jumlah tambahan orang
+        update_biaya(biaya_a, biaya_t);
+      });
     });
   }
 
@@ -89,6 +112,7 @@ if ($_GET['form']=='add') { ?>
                     <?php
                       $query_paket = mysqli_query($mysqli, "SELECT * FROM is_paket ORDER BY id_paket ASC")
                                                             or die('Ada kesalahan pada query tampil paket: '.mysqli_error($mysqli));
+
                       while ($data_paket = mysqli_fetch_assoc($query_paket)) {
                         echo"<option value=\"$data_paket[id_paket]\"> $data_paket[nama_paket] </option>";
                       }
@@ -112,13 +136,13 @@ if ($_GET['form']=='add') { ?>
               <div class="form-group">
                 <label class="col-sm-2 control-label">Tambahan Orang</label>
                 <div class="col-sm-5">
-                  <input type="number" class="form-control" name="tambahan_orang" autocomplete="off" required>
+                  <input type="number" class="form-control" id="tambahan_orang" name="tambahan_orang" min='0' autocomplete="off" required>
                 </div>
               </div>
 
-              <span id='biaya'>
+              <span>
               <div class="form-group">
-                <label class="col-sm-2 control-label">Biaya</label>
+                <label class="col-sm-2 control-label">Biaya Tambahan</label>
                 <div class="col-sm-5">
                   <div class="input-group">
                     <span class="input-group-addon">Rp.</span>
@@ -128,7 +152,7 @@ if ($_GET['form']=='add') { ?>
               </div>
               </span>
 
-              <span id='biaya'>
+              <span>
               <div class="form-group">
                 <label class="col-sm-2 control-label">Total Biaya</label>
                 <div class="col-sm-5">
@@ -249,17 +273,17 @@ elseif ($_GET['form']=='edit') {
               <div class="form-group">
                 <label class="col-sm-2 control-label">Tambahan Orang</label>
                 <div class="col-sm-5">
-                  <input type="text" class="form-control" name="tambahan_orang" autocomplete="off" value="<?php echo $data['tambahan_orang']; ?>" required>
+                  <input type="number" class="form-control" id="tambahan_orang" name="tambahan_orang" min="0" autocomplete="off" value="<?php echo $data['tambahan_orang']; ?>" required>
                 </div>
               </div>
 
               <span id='biaya'>
               <div class="form-group">
-                <label class="col-sm-2 control-label">Biaya</label>
+                <label class="col-sm-2 control-label">Biaya Tambahan</label>
                 <div class="col-sm-5">
                   <div class="input-group">
                     <span class="input-group-addon">Rp.</span>
-                    <input type="text" class="form-control" id="harga_tambahan" name="harga_tambahan" value="<?php echo format_rupiah($data['harga_tambahan']); ?>" readonly>
+                    <input type="text" class="form-control" id="harga_tambahan" name="harga_tambahan" value="<?php echo format_rupiah($data['harga_tambahan']*$data['tambahan_orang']); ?>" readonly>
                   </div>
                 </div>
               </div>
@@ -271,7 +295,7 @@ elseif ($_GET['form']=='edit') {
                 <div class="col-sm-5">
                   <div class="input-group">
                     <span class="input-group-addon">Rp.</span>
-                    <input type="text" class="form-control" id="harga_tambahan" name="harga_tambahan" value="<?php echo format_rupiah($data['total']); ?>" readonly>
+                    <input type="text" class="form-control" id="total" name="total" value="<?php echo format_rupiah($data['total']); ?>" readonly>
                   </div>
                 </div>
               </div>

@@ -23,7 +23,7 @@ else {
             $nama_pelanggan    = mysqli_real_escape_string($mysqli, trim($_POST['nama_pelanggan']));
             $tambahan = strtoupper(mysqli_real_escape_string($mysqli, trim($_POST['tambahan_orang'])));
             $paket             = mysqli_real_escape_string($mysqli, trim($_POST['paket']));
-            $total             = mysqli_real_escape_string($mysqli, trim($_POST['total']));
+            $total             = mysqli_real_escape_string($mysqli, filter_var($_POST['total'], FILTER_SANITIZE_NUMBER_INT));
             
             // perintah query untuk menyimpan data ke tabel transaksi
             $query = mysqli_query($mysqli, "INSERT INTO is_transaksi(id_transaksi,tanggal,nama_pelanggan,tambahan_orang,paket,total)
@@ -51,7 +51,7 @@ else {
                 $nama_pelanggan    = mysqli_real_escape_string($mysqli, trim($_POST['nama_pelanggan']));
                 $tambahan = strtoupper(mysqli_real_escape_string($mysqli, trim($_POST['tambahan_orang'])));
                 $paket             = mysqli_real_escape_string($mysqli, trim($_POST['paket']));
-                $total             = mysqli_real_escape_string($mysqli, trim($_POST['total']));
+                $total             = mysqli_real_escape_string($mysqli, filter_var($_POST['total'], FILTER_SANITIZE_NUMBER_INT));
 
                 // perintah query untuk mengubah data pada tabel transaksi
                 $query = mysqli_query($mysqli, "UPDATE is_transaksi SET tanggal             = '$tanggal_transaksi',

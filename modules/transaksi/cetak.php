@@ -27,9 +27,9 @@ if (isset($_GET['id'])) {
 	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	    <meta name="description" content="Aplikasi Steam Mobil dan Motor">
 	    <meta name="keywords" content="Indra Styawantoro" />
-
 	    <!-- favicon -->
 	    <link rel="shortcut icon" href="../../assets/img/favicon.png" />
+	    <style>@page{size:A5;}</style>
   	</head>
 	<body>
 		<br>
@@ -75,12 +75,20 @@ if (isset($_GET['id'])) {
 			<tr>
 				<td colspan="3">=================================</td>
 			</tr>
-			<tr></tr>
-			<tr></tr>
-			<tr></tr>
 			<tr>
-				<td align="center" colspan="3"><b>Total : Rp. <?php echo format_rupiah($data['harga']); ?></b></td>
+				<td>Harga</td>
+				<td>: Rp. </td>
+				<td align="right" ><?php echo format_rupiah($data['harga']) ?></td>
 			</tr>
+			<tr>
+				<td>Tambahan</td>
+				<td>: Rp. </td>
+				<td align="right" ><?php echo format_rupiah($data['tambahan_orang'] * $data['harga_tambahan']) ?></td>
+			</tr>
+			<tr>
+				<td><b>Total</b></td>
+				<td><b>: Rp. </b></td>
+				<td align="right"><b><?php echo format_rupiah($data['total']) ?></b></td>
 			<tr>
 				<td colspan="3">=================================</td>
 			</tr>

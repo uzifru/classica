@@ -97,7 +97,8 @@ if (isset($_GET['tgl_awal'])) {
             $exp               = explode('-',$t_transaksi);
             $tanggal_transaksi = tgl_eng_to_ind($exp[2]."-".$exp[1]."-".$exp[0]);
 
-            $jumlah = $data['harga'];
+            // $jumlah = $data['harga'] + + ($data['tambahan_orang'] * $data['harga_tambahan']);
+            // $jumlah = $data['total'];
             // menampilkan isi tabel dari database ke tabel di aplikasi
             echo "  <tr>
                         <td width='40' height='13' align='center' valign='middle'>$no</td>
@@ -106,11 +107,11 @@ if (isset($_GET['tgl_awal'])) {
                         <td style='padding-left:5px;' width='180' height='13' valign='middle'>$data[nama_pelanggan]</td>
                         <td width='120' height='13' align='center' valign='middle'>$data[nama_paket]</td>
                         <td style='padding-left:5px;' width='150' height='13' valign='middle'>$data[tambahan_orang]</td>
-                        <td style='padding-right:5px;' width='150' height='13' align='right' valign='middle'>Rp. ".format_rupiah($jumlah)."</td>
+                        <td style='padding-right:5px;' width='150' height='13' align='right' valign='middle'>Rp. ".format_rupiah($data['total'])."</td>
                     </tr>";
             $no++;
 
-            $total += $jumlah;
+            $total += $data['total'];
         }
             echo "  <tr>
                         <td height='15' colspan='6' align='left' valign='middle'><strong>  Total</strong></td>
